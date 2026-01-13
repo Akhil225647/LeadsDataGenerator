@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeadGen Pro | Credit Union Lead Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .select-multiple {
+            scrollbar-width: thin;
+            scrollbar-color: #818cf8 #f3f4f6;
+        }
+        
+        .select-multiple::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .select-multiple::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+        
+        .select-multiple::-webkit-scrollbar-thumb {
+            background: #818cf8;
+            border-radius: 10px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stat-card {
+            background: rgba(79, 70, 229, 0.05);
+            border: 1px solid rgba(79, 70, 229, 0.1);
+        }
+        
+        .category-badge {
+            transition: all 0.2s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        
+        .category-badge:hover {
+            background-color: #eef2ff;
+            border-color: #818cf8;
+        }
+        
+        .category-badge.active {
+            background: #4f46e5;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        }
+
+        .modal-scroll::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .modal-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 min-h-screen text-slate-900">
+
+<div class="max-w-7xl mx-auto px-4 py-8 lg:py-12">
+    
+    <!-- Header Section -->
+    <header class="gradient-bg rounded-3xl shadow-xl p-8 lg:p-12 mb-10 text-white relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-center md:text-left">
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/20 text-sm font-medium mb-4 backdrop-blur-sm">
+                    <span class="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span>
+                    Lead Generation Suite
+                </div>
+                <h1 class="text-4xl lg:text-5xl font-extrabold mb-3 tracking-tight">Professional Lead Generator</h1>
+                <p class="text-indigo-100 text-lg max-w-xl">Create high-fidelity datasets for credit union testing and marketing simulations.</p>
+            </div>
+            <div class="hidden lg:block">
+                <div class="bg-white/10 p-6 rounded-2xl backdrop-blur-md">
+                    <i data-lucide="database" class="w-20 h-20 text-white/40"></i>
+                </div>
+            </div>
+        </div>
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column - Configuration -->
+        <div class="lg:col-span-8 space-y-8">
+            
+            <!-- Basic Settings Card -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8 card-hover">
+                <div class="flex items-center mb-6">
+                    <div class="p-2 bg-indigo-50 rounded-lg mr-4">
+                        <i data-lucide="settings-2" class="w-6 h-6 text-indigo-600"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Core Configuration</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700">Number of Leads</label>
+                        <input id="recordCount" type="number" min="1" max="10000" value="100"
+                               class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition font-medium">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-slate-700">Export Filename</label>
+                        <input id="filePrefix" type="text" value="cu_leads_export"
+                               class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition font-medium">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product Category Filter -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8 card-hover">
+                <div class="flex items-center mb-6">
+                    <div class="p-2 bg-purple-50 rounded-lg mr-4">
+                        <i data-lucide="filter" class="w-6 h-6 text-purple-600"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Category Filters</h2>
+                </div>
+                
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button onclick="filterByType('all', event)" class="category-badge active px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm" data-type="all">All Items</button>
+                    <button onclick="filterByType('Loans', event)" class="category-badge px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm" data-type="Loans">💰 Loans</button>
+                    <button onclick="filterByType('Deposit Accounts', event)" class="category-badge px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm" data-type="Deposit Accounts">🏦 Deposits</button>
+                    <button onclick="filterByType('Insurance', event)" class="category-badge px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm" data-type="Insurance">🛡️ Insurance</button>
+                    <button onclick="filterByType('Services', event)" class="category-badge px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm" data-type="Services">🔧 Services</button>
+                    <button onclick="filterByType('Credit Cards', event)" class="category-badge px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm" data-type="Credit Cards">💳 Credit Cards</button>
+                    <button onclick="filterByType('Default', event)" class="category-badge px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm" data-type="Default">📋 Default</button>
+                </div>
+
+                <div class="bg-indigo-50/50 rounded-xl p-4 flex items-center text-sm text-indigo-700 border border-indigo-100">
+                    <i data-lucide="info" class="w-4 h-4 mr-2"></i>
+                    <span id="filterInfo">Showing 57 products</span>
+                </div>
+            </section>
+
+            <!-- Product Selection -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:p-8 card-hover">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
+                    <div class="flex items-center">
+                        <div class="p-2 bg-amber-50 rounded-lg mr-4">
+                            <i data-lucide="layers" class="w-6 h-6 text-amber-600"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-800">Select Products</h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="selectAllProducts()" class="text-xs bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg font-bold hover:bg-indigo-200 transition">SELECT ALL</button>
+                        <button onclick="clearAllProducts()" class="text-xs bg-slate-100 text-slate-600 px-4 py-2 rounded-lg font-bold hover:bg-slate-200 transition">CLEAR ALL</button>
+                    </div>
+                </div>
+                
+                <div class="relative mb-4">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </div>
+                    <input id="productSearch" type="text" placeholder="Search product name or CRM code..."
+                           class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                           oninput="searchProducts()">
+                </div>
+                
+                <select id="productCodes" multiple class="w-full border border-slate-300 rounded-xl px-2 py-2 h-72 select-multiple outline-none focus:ring-2 focus:ring-indigo-500 transition text-sm">
+                </select>
+            </section>
+        </div>
+
+        <!-- Right Column - Summary & Actions -->
+        <aside class="lg:col-span-4 space-y-6">
+            
+            <!-- Summary Stats -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+                    <i data-lucide="pie-chart" class="w-5 h-5 mr-2 text-indigo-600"></i>
+                    Export Summary
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="flex gap-4">
+                        <div class="stat-card p-4 rounded-2xl text-center flex-1">
+                            <div class="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Total Leads</div>
+                            <div id="statRecords" class="text-xl font-bold text-slate-800">100</div>
+                        </div>
+                        <div class="stat-card p-4 rounded-2xl text-center flex-1">
+                            <div class="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Products</div>
+                            <div id="statProducts" class="text-xl font-bold text-slate-800">0</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="stat-card p-4 rounded-2xl text-center flex-1">
+                            <div class="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Categories</div>
+                            <div id="statCategories" class="text-xl font-bold text-indigo-600">0</div>
+                        </div>
+                        <div class="stat-card p-4 rounded-2xl text-center flex-1">
+                            <div class="text-[10px] font-medium text-slate-500 uppercase tracking-wider mb-1">Est. Size</div>
+                            <div id="statFileSize" class="text-xl font-bold text-slate-800">~24 KB</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="generateCSV()" class="w-full gradient-bg text-white font-bold py-5 px-6 rounded-2xl shadow-lg hover:shadow-indigo-200 transition transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3">
+                    <i data-lucide="download-cloud" class="w-6 h-6"></i>
+                    GENERATE LEADS
+                </button>
+                <button onclick="showPreview()" class="w-full bg-white border-2 border-slate-200 text-slate-700 font-bold py-4 px-6 rounded-2xl hover:bg-slate-50 transition flex items-center justify-center gap-3">
+                    <i data-lucide="eye" class="w-5 h-5"></i>
+                    PREVIEW DATA
+                </button>
+            </div>
+
+            <!-- Advanced Quality Settings -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+                <h3 class="text-sm font-bold text-slate-800">Data Options</h3>
+                <div class="flex items-center justify-between text-xs">
+                    <span>Include Headers</span>
+                    <input type="checkbox" id="includeHeader" checked class="w-4 h-4 rounded text-indigo-600">
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span>Unique Emails</span>
+                    <input type="checkbox" id="removeDuplicates" checked class="w-4 h-4 rounded text-indigo-600">
+                </div>
+                <div class="space-y-1">
+                    <div class="flex justify-between text-[10px] font-bold">
+                        <span>ELIGIBILITY RATE</span>
+                        <span id="eligibilityValue">70%</span>
+                    </div>
+                    <input id="eligibilityRate" type="range" min="0" max="100" value="70" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" oninput="document.getElementById('eligibilityValue').textContent = this.value + '%'">
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Enhanced Preview Modal -->
+    <div id="previewModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-6xl w-full max-h-[90vh] flex flex-col overflow-hidden fade-in">
+            <div class="gradient-bg p-6 flex items-center justify-between text-white shrink-0">
+                <div class="flex items-center">
+                    <div class="bg-white/20 p-2 rounded-xl mr-4">
+                        <i data-lucide="table-properties" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold">Lead Preview</h3>
+                </div>
+                <button onclick="closePreview()" class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-xl transition">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-auto modal-scroll grow">
+                <div id="previewContent" class="overflow-x-auto rounded-xl border border-slate-200"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notificationArea" class="fixed top-6 right-6 z-[100] space-y-3 pointer-events-none"></div>
+</div>
+
+<script>
+/* ===================== PRODUCT CATALOG ===================== */
+
+const PRODUCTS = [
+    {id: 1005604, name: "Auto Insurance", code: "CRM30", category: "Insurance"},
+    {id: 1005684, name: "General Inquiry", code: "TP", category: "Default"},
+    {id: 1005723, name: "Certificate of Deposits", code: "CRM10", category: "Deposit Accounts"},
+    {id: 1005724, name: "Checking", code: "CRM12", category: "Deposit Accounts"},
+    {id: 1005734, name: "Consumer Line of Credit", code: "CRM48", category: "Loans"},
+    {id: 1005735, name: "Consumer Loan", code: "CRM49", category: "Loans"},
+    {id: 1005585, name: "Credit Card", code: "CRM02", category: "Credit Cards"},
+    {id: 1005730, name: "Club Account", code: "CRM13", category: "Deposit Accounts"},
+    {id: 1005591, name: "Electronic Bill Payment", code: "CRM17", category: "Services"},
+    {id: 1005596, name: "Electronic Funds Transfer", code: "CRM18", category: "Services"},
+    {id: 1005608, name: "Foreign Currency Accounts", code: "CRM35", category: "Services"},
+    {id: 1005617, name: "Home Equity Lines of Credit", code: "CRM51", category: "Loans"},
+    {id: 1005736, name: "Home Loan", code: "CRM52", category: "Loans"},
+    {id: 1005605, name: "Homeowner's Insurance", code: "CRM31", category: "Insurance"},
+    {id: 1005609, name: "International Wire Transfers", code: "CRM36", category: "Services"},
+    {id: 1005725, name: "IRA Account", code: "CRM38", category: "Deposit Accounts"},
+    {id: 1005603, name: "Life Insurance", code: "CRM32", category: "Insurance"},
+    {id: 1005590, name: "Mobile Banking", code: "CRM20", category: "Services"},
+    {id: 1005593, name: "Mobile Check Deposit", code: "CRM21", category: "Services"},
+    {id: 1005587, name: "Money Market", code: "CRM14", category: "Deposit Accounts"},
+    {id: 1005616, name: "Mortgage Loans", code: "CRM53", category: "Loans"},
+    {id: 1005611, name: "Mutual Funds", code: "CRM40", category: "Insurance"},
+    {id: 1005589, name: "Online Banking", code: "CRM22", category: "Services"},
+    {id: 1005614, name: "Personal Loans", code: "CRM54", category: "Loans"},
+    {id: 1005592, name: "Person-to-Person (P2P) Payments", code: "CRM24", category: "Services"},
+    {id: 1005624, name: "Private Banking Services", code: "CRM57", category: "Services"},
+    {id: 1005607, name: "Property and Casualty Insurance", code: "CRM33", category: "Insurance"},
+    {id: 1005726, name: "Savings", code: "CRM15", category: "Deposit Accounts"},
+    {id: 1005612, name: "Stocks and Bonds", code: "CRM41", category: "Insurance"},
+    {id: 1005618, name: "Student Loans", code: "CRM56", category: "Loans"},
+    {id: 1005606, name: "Travel Insurance", code: "CRM34", category: "Insurance"},
+    {id: 1005623, name: "Trust Services", code: "CRM58", category: "Services"},
+    {id: 1005622, name: "Wealth Management Services", code: "CRM59", category: "Services"},
+    {id: 1005615, name: "Auto Loans", code: "CRM42", category: "Loans"},
+    {id: 1005731, name: "Business Loan", code: "CRM45", category: "Loans"},
+    {id: 1005732, name: "Business Home Loan", code: "CRM43", category: "Loans"},
+    {id: 1005733, name: "Business Line of Credit", code: "CRM44", category: "Loans"},
+    {id: 1005727, name: "Business CD", code: "CRM06", category: "Deposit Accounts"},
+    {id: 1005728, name: "Business Checking", code: "CRM07", category: "Deposit Accounts"},
+    {id: 1005729, name: "Business Savings", code: "CRM09", category: "Deposit Accounts"},
+    {id: 1005582, name: "Business Property Insurance", code: "CRM04", category: "Insurance"},
+    {id: 1005583, name: "Liability Insurance", code: "CRM05", category: "Insurance"},
+    {id: 1005584, name: "Business Interruption Insurance", code: "CRM03", category: "Insurance"},
+    {id: 1005586, name: "Business Credit Card", code: "CRM01", category: "Credit Cards"},
+    {id: 1005588, name: "Business Money Market", code: "CRM08", category: "Deposit Accounts"},
+    {id: 1005594, name: "Online Corporate Banking", code: "CRM23", category: "Services"},
+    {id: 1005595, name: "Cash Management Solutions", code: "CRM16", category: "Services"},
+    {id: 1005597, name: "Merchant Services", code: "CRM19", category: "Services"},
+    {id: 1005598, name: "Financial Education Resources", code: "CRM27", category: "Services"},
+    {id: 1005599, name: "Financial Planning Services", code: "CRM28", category: "Services"},
+    {id: 1005600, name: "Investment Advisory Services", code: "CRM29", category: "Services"},
+    {id: 1005601, name: "Business Education Resources", code: "CRM25", category: "Services"},
+    {id: 1005602, name: "Corporate Planning Services", code: "CRM26", category: "Services"},
+    {id: 1005610, name: "Trade Finance Services", code: "CRM37", category: "Services"},
+    {id: 1005619, name: "SBA Loans", code: "CRM55", category: "Loans"},
+    {id: 1005620, name: "Commercial Real Estate Loans", code: "CRM47", category: "Loans"},
+    {id: 1005621, name: "Equipment Financing", code: "CRM50", category: "Loans"}
+];
+
+/* ===================== SEED DATA ===================== */
+
+const DATA = {
+    firstNames: {
+        male: ["James", "Michael", "Robert", "John", "David", "William", "Richard", "Joseph", "Thomas", "Christopher", "Charles", "Daniel", "Matthew", "Anthony", "Mark", "Donald", "Steven", "Andrew", "Paul", "Joshua", "Kenneth", "Kevin", "Brian", "George", "Timothy", "Ronald", "Edward", "Jason", "Jeffrey", "Ryan", "Jacob", "Gary", "Nicholas", "Eric", "Jonathan", "Stephen", "Larry", "Justin", "Scott", "Brandon"],
+        female: ["Mary", "Patricia", "Jennifer", "Linda", "Barbara", "Elizabeth", "Susan", "Jessica", "Sarah", "Karen", "Lisa", "Nancy", "Betty", "Margaret", "Sandra", "Ashley", "Kimberly", "Emily", "Donna", "Michelle", "Carol", "Amanda", "Dorothy", "Melissa", "Deborah", "Stephanie", "Rebecca", "Sharon", "Laura", "Cynthia", "Kathleen", "Amy", "Angela", "Shirley", "Anna", "Brenda", "Pamela", "Emma", "Nicole", "Helen"]
+    },
+    middleNames: ["A.", "J.", "L.", "M.", "R.", "S.", "T.", "W.", "E.", "K.", "D.", "C.", "P.", "B.", "N.", "G.", "H.", "F."],
+    lastNames: ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell", "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker", "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales"],
+    emailProviders: [{domain: "gmail.com", weight: 45}, {domain: "yahoo.com", weight: 15}, {domain: "outlook.com", weight: 15}, {domain: "icloud.com", weight: 10}],
+    locations: [{ city: "Plano", state: "TX", area: "469", zip: "75024" }, { city: "Waco", state: "TX", area: "254", zip: "76501" }, { city: "Austin", state: "TX", area: "512", zip: "78701" }],
+    streetSuffixes: ["St", "Ave", "Blvd", "Dr", "Ln", "Rd"],
+    streetNames: ["Oak", "Maple", "Cedar", "Pine", "Elm", "Main"],
+    utmSources: ["Google Ads", "Facebook", "Instagram", "LinkedIn"],
+    utmMediums: ["cpc", "social", "email"],
+    utmCampaigns: ["Spring Auto", "Mortgage Refi"],
+    utmTerms: ["low rates", "credit union"]
+};
+
+/* ===================== CORE LOGIC ===================== */
+
+let currentFilterType = 'all';
+
+function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function weightedRandom(items) {
+    const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
+    let random = Math.random() * totalWeight;
+    for (const item of items) {
+        if (random < item.weight) return item.domain;
+        random -= item.weight;
+    }
+    return items[0].domain;
+}
+
+function generateLead(product, eligibilityRate, minScore, maxScore, usedEmails) {
+    const isMale = Math.random() > 0.48;
+    const firstName = randomFrom(isMale ? DATA.firstNames.male : DATA.firstNames.female);
+    const middleName = Math.random() > 0.3 ? randomFrom(DATA.middleNames) : "";
+    const lastName = randomFrom(DATA.lastNames);
+    const loc = randomFrom(DATA.locations);
+    let email;
+    let attempts = 0;
+    do {
+        const domain = weightedRandom(DATA.emailProviders);
+        email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${Math.floor(Math.random()*999)}@${domain}`;
+        attempts++;
+    } while (usedEmails.has(email) && attempts < 20);
+    usedEmails.add(email);
+    
+    return {
+        firstName, middleName, lastName, email,
+        phone: `(${loc.area}) ${Math.floor(200+Math.random()*700)}-${Math.floor(1000+Math.random()*8999)}`,
+        accountNumber: String(Math.floor(1000000000 + Math.random() * 8999999999)),
+        address1: `${Math.floor(100+Math.random()*9000)} ${randomFrom(DATA.streetNames)} ${randomFrom(DATA.streetSuffixes)}`,
+        address2: Math.random() > 0.8 ? "Apt " + Math.floor(100+Math.random()*900) : "",
+        city: loc.city, state: loc.state, zipCode: loc.zip,
+        preferredContactMethod: Math.random() > 0.4 ? "Email" : "Phone",
+        isEligible: Math.random() * 100 < eligibilityRate ? "Yes" : "No",
+        utmSource: randomFrom(DATA.utmSources),
+        utmMedium: randomFrom(DATA.utmMediums),
+        utmCampaign: randomFrom(DATA.utmCampaigns),
+        utmContent: "lead_gen_v3",
+        utmTerm: randomFrom(DATA.utmTerms),
+        engagementScore: Math.floor(minScore + Math.random() * (maxScore - minScore + 1)),
+        productCategoryCode: product.code
+    };
+}
+
+/* ===================== UI INTERACTIONS ===================== */
+
+function populateProducts() {
+    const select = document.getElementById("productCodes");
+    if (!select) return;
+    select.innerHTML = "";
+    PRODUCTS.sort((a,b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name)).forEach(product => {
+        const option = document.createElement("option");
+        option.value = product.code;
+        option.textContent = `${product.code} | ${product.name} (${product.category})`;
+        option.dataset.category = product.category;
+        select.appendChild(option);
+    });
+}
+
+function filterByType(type, event) {
+    currentFilterType = type;
+    const options = document.getElementById("productCodes").options;
+    let visibleCount = 0;
+    document.querySelectorAll('.category-badge').forEach(b => b.classList.remove('active'));
+    if (event) event.target.classList.add('active');
+    for (let opt of options) {
+        const matches = (type === 'all' || opt.dataset.category === type);
+        opt.style.display = matches ? "" : "none";
+        if (matches) visibleCount++;
+    }
+    document.getElementById('filterInfo').textContent = `Showing ${visibleCount} products`;
+    searchProducts();
+}
+
+function searchProducts() {
+    const search = document.getElementById("productSearch").value.toLowerCase();
+    const options = document.getElementById("productCodes").options;
+    for (let opt of options) {
+        const matchesType = currentFilterType === 'all' || opt.dataset.category === currentFilterType;
+        const matchesSearch = opt.textContent.toLowerCase().includes(search);
+        opt.style.display = (matchesType && matchesSearch) ? "" : "none";
+    }
+}
+
+function selectAllProducts() {
+    const options = document.getElementById("productCodes").options;
+    for (let opt of options) if (opt.style.display !== "none") opt.selected = true;
+    updateStatistics();
+}
+
+function clearAllProducts() {
+    const options = document.getElementById("productCodes").options;
+    for (let opt of options) opt.selected = false;
+    updateStatistics();
+}
+
+function updateStatistics() {
+    const count = parseInt(document.getElementById("recordCount").value) || 0;
+    const selectedOptions = Array.from(document.getElementById("productCodes").selectedOptions);
+    const selectedCount = selectedOptions.length;
+    const uniqueCategories = new Set(selectedOptions.map(o => o.dataset.category)).size;
+
+    document.getElementById("statRecords").textContent = count.toLocaleString();
+    document.getElementById("statProducts").textContent = selectedCount;
+    document.getElementById("statCategories").textContent = uniqueCategories;
+    
+    const sizeInKB = Math.round((count * 250) / 1024);
+    document.getElementById("statFileSize").textContent = `~${sizeInKB} KB`;
+}
+
+function generateCSV() {
+    const count = parseInt(document.getElementById("recordCount").value);
+    const selectedOptions = Array.from(document.getElementById("productCodes").selectedOptions);
+    if (isNaN(count) || count < 1) return notify("Enter a valid count", "error");
+    if (selectedOptions.length === 0) return notify("Select a product", "error");
+
+    const selectedProducts = selectedOptions.map(opt => PRODUCTS.find(p => p.code === opt.value));
+    const usedEmails = new Set();
+    const headers = ["First Name", "Middle Name", "Last Name", "Email", "Phone", "Account Number", "Address 1", "Address 2", "City", "State", "Zip Code", "Preferred Contact Method", "Is Eligible", "UTM Source", "UTM Medium", "UTM Campaign", "UTM Content", "UTM Term", "Engagement Score", "ProductCategoryCode"];
+    
+    let csv = document.getElementById("includeHeader").checked ? headers.join(",") + "\n" : "";
+
+    for (let i = 0; i < count; i++) {
+        const lead = generateLead(randomFrom(selectedProducts), 70, 40, 95, usedEmails);
+        const row = headers.map(h => {
+            const key = h.replace(/\s+/g, '').replace(/^./, c => c.toLowerCase());
+            return `"${lead[key] || ""}"`;
+        });
+        csv += row.join(",") + "\n";
+    }
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = (document.getElementById("filePrefix").value || "leads") + ".csv";
+    link.click();
+    notify(`Generated ${count} leads`, "success");
+}
+
+function showPreview() {
+    const selectedOptions = Array.from(document.getElementById("productCodes").selectedOptions);
+    if (selectedOptions.length === 0) return notify("Select products first", "error");
+    const selectedProducts = selectedOptions.map(opt => PRODUCTS.find(p => p.code === opt.value));
+    const leads = [];
+    const usedEmails = new Set();
+    for (let i = 0; i < 8; i++) leads.push(generateLead(randomFrom(selectedProducts), 70, 40, 95, usedEmails));
+
+    let html = `<table class="w-full text-[10px] text-left">
+        <thead class="bg-slate-50"><tr><th class="p-2">Name</th><th class="p-2">Email</th><th class="p-2">Eligible</th><th class="p-2">Score</th><th class="p-2">Code</th></tr></thead>
+        <tbody>${leads.map(l => `<tr><td class="p-2 border-t">${l.firstName} ${l.lastName}</td><td class="p-2 border-t">${l.email}</td><td class="p-2 border-t">${l.isEligible}</td><td class="p-2 border-t">${l.engagementScore}</td><td class="p-2 border-t">${l.productCategoryCode}</td></tr>`).join("")}</tbody>
+    </table>`;
+    document.getElementById("previewContent").innerHTML = html;
+    document.getElementById("previewModal").classList.remove("hidden");
+}
+
+function notify(msg, type) {
+    const div = document.createElement("div");
+    div.className = `fade-in p-4 rounded-xl shadow-lg flex items-center gap-2 border bg-white ${type === 'success' ? 'border-green-100 text-green-700' : 'border-red-100 text-red-700'}`;
+    div.innerHTML = `<span>${msg}</span>`;
+    const area = document.getElementById("notificationArea");
+    if (area) area.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
+}
+
+function closePreview() { document.getElementById("previewModal").classList.add("hidden"); }
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Safety check for lucide library
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    
+    populateProducts();
+    updateStatistics();
+    
+    const recordInput = document.getElementById("recordCount");
+    if (recordInput) recordInput.addEventListener("input", updateStatistics);
+    
+    const productSelect = document.getElementById("productCodes");
+    if (productSelect) productSelect.addEventListener("change", updateStatistics);
+});
+</script>
+</body>
+</html>
